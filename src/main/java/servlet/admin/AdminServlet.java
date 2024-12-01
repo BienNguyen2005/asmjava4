@@ -4,8 +4,11 @@ import java.io.IOException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import dao.FavoriteDAO;
+import dao.ShareDAO;
 import dao.UsersDAO;
 import dao.VideoDAO;
+import dto.ReportFavoriteUser;
 import entity.Users;
 import entity.Video;
 import jakarta.servlet.ServletException;
@@ -21,6 +24,8 @@ public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UsersDAO usersDAO = new UsersDAO();
 	private VideoDAO videoDAO = new VideoDAO();
+	private FavoriteDAO favoriteDAO = new FavoriteDAO();
+	private ShareDAO shareDAO = new ShareDAO();
 
 	public AdminServlet() {
 		// TODO Auto-generated constructor stub
@@ -55,12 +60,15 @@ public class AdminServlet extends HttpServlet {
 				return;
 			}
 		} else if (uri.contains("/reportFavorites")) {
+			request.setAttribute("listReportFavorites", favoriteDAO.generateFavoriteReport());
 			request.getRequestDispatcher("/views/admin/reportFavorites.jsp").forward(request, response);
 			return;
 		} else if (uri.contains("/reportFavoriteUser")) {
+			request.setAttribute("listVideo", videoDAO.findAll());
 			request.getRequestDispatcher("/views/admin/reportFavoriteUser.jsp").forward(request, response);
 			return;
 		} else if (uri.contains("/reportShareFriend")) {
+			request.setAttribute("listVideo", videoDAO.findAll());
 			request.getRequestDispatcher("/views/admin/reportShareFriend.jsp").forward(request, response);
 			return;
 		}
@@ -186,6 +194,19 @@ public class AdminServlet extends HttpServlet {
 			request.setAttribute("listUsers", usersDAO.findAll());
 			request.getRequestDispatcher("/views/admin/userManager.jsp").forward(request, response);
 			return;
+		} else if (uri.contains("/reportFavoriteUser")) {
+			String id = request.getParameter("id");
+			request.setAttribute("listVideo", videoDAO.findAll());
+			request.setAttribute("video", videoDAO.findById(id));
+			request.setAttribute("listReportFavoriteUser", favoriteDAO.findUsersByVideoId(id));
+			request.getRequestDispatcher("/views/admin/reportFavoriteUser.jsp").forward(request, response);
+			return;
+		} else if (uri.contains("/reportShareFriend")) {
+			String id = request.getParameter("id");
+			request.setAttribute("listVideo", videoDAO.findAll());
+			request.setAttribute("video", videoDAO.findById(id));
+			request.setAttribute("listReportFavoriteUser", shareDAO.findReportShareFriendsByVideoId(id));
+			request.getRequestDispatcher("/views/admin/reportShareFriend.jsp").forward(request, response);
 		}
 		request.getRequestDispatcher("/views/admin/home.jsp").forward(request, response);
 	}

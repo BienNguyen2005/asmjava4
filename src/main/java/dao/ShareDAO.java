@@ -2,6 +2,7 @@ package dao;
 
 import java.util.List;
 
+import dto.ReportShareFriend;
 import entity.Share;
 import entity.Video;
 import jakarta.persistence.EntityManager;
@@ -77,4 +78,10 @@ public class ShareDAO implements DAOInterface<Share, Integer> {
 		return query.getResultList();
 	}
 
+	public List<ReportShareFriend> findReportShareFriendsByVideoId(String videoId) {
+		String jpql = "SELECT new dto.ReportShareFriend(u.fullname, u.email, s.emails, (SELECT MAX(f.shareDate) FROM Favorite f WHERE f.video.id = :videoId AND f.user.id = u.id), s.shareDate) FROM Share s JOIN s.user u WHERE s.video.id = :videoId";
+		TypedQuery<ReportShareFriend> query = em.createQuery(jpql, ReportShareFriend.class);
+		query.setParameter("videoId", videoId);
+		return query.getResultList();
+	}
 }

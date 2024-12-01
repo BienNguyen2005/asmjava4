@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Users")
 public class Users {
-	
+
 	private String id;
 	private String password;
 	private String email;
@@ -24,6 +24,11 @@ public class Users {
 	public Users() {
 	}
 
+	public Users(String id, String password) {
+		this.id = id;
+		this.password = password;
+	}
+
 	public Users(String id, String password, String email, String fullname) {
 		this.id = id;
 		this.password = password;
@@ -31,15 +36,12 @@ public class Users {
 		this.fullname = fullname;
 	}
 
-	public Users(String id, String password, String email, String fullname, Boolean admin, List<Favorite> favorites,
-			List<Share> shares) {
+	public Users(String id, String password, String email, String fullname, Boolean admin) {
 		this.id = id;
 		this.password = password;
 		this.email = email;
 		this.fullname = fullname;
 		this.admin = admin;
-		this.favorites = favorites;
-		this.shares = shares;
 	}
 
 	@Id
